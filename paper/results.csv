@@ -18,4 +18,4 @@ Extended benchmark,PlantVillage-38,Full PlantVillage,38,NoAug,99.56,,,99.56,,1.0
 Soybean,EXP-1 Soy-Baseline-NoAug,Indian Soybean,6,NoAug,100.00,100.00,100.00,100.00,100.00,,,,,,Single split; unreliable because of tiny Root test support
 Soybean,EXP-2 Soy-HeavyAug-LR1e3,Indian Soybean,6,Heavy augmentation; LR 1e-3,100.00,100.00,100.00,100.00,100.00,,,,,,Single split; unreliable because of tiny Root test support
 Soybean,EXP-3 Soy-LightAug-LR1e3,Indian Soybean,6,Light augmentation; LR 1e-3,85.88,90.50,85.90,85.70,96.90,,,,,,Recorded experiment
-Soybean,EXP-4 Soy-HeavyAug-LR3e4,Indian Soybean,6,Heavy augmentation; LR 3e-4,99.44,99.50,99.40,99.40,99.90,, , ,99.57,0.85,Five-fold CV; principal soybean generalisation estimate
+Soybean,EXP-4 Soy-HeavyAug-LR3e4,Indian Soybean,6,Heavy augmentation; LR 3e-4,99.44,99.50,99.40,99.40,99.90,,,,99.57,0.85,Five-fold CV; principal soybean generalisation estimate
