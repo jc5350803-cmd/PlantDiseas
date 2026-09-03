@@ -12,10 +12,7 @@ Augmentation study,Hybrid-LightAug,24-class combined,24,Flip + Brightness,97.06,
 Augmentation study,Hybrid-NoAug,24-class combined,24,None,96.03,,,96.04,99.82,,0.9988,,,,Same architecture and dataset
 Augmentation study,Hybrid-LightAug-v2,24-class combined,24,Flip + Brightness,96.43,,,96.42,99.85,,0.9990,,,,Independent repeat of LightAug
 Augmentation study,Hybrid-FullAug,24-class combined,24,All transforms,95.91,,,95.91,99.82,,0.9990,,,,Broad augmentation policy
-Extended benchmark,Proposed 18-class,PlantVillage + Wheat,18,LightAug,99.46,99.47,99.46,99.46,,,,930000,,,Recorded manuscript benchmark
-Extended benchmark,Proposed 18-class,PlantVillage + Wheat,18,NoAug,99.12,99.13,99.12,99.12,,,,,,,Recorded manuscript benchmark
-Extended benchmark,PlantVillage-38,Full PlantVillage,38,NoAug,99.56,,,99.56,,1.0,1.0,940000,,,50-epoch recorded benchmark
-Soybean,EXP-1 Soy-Baseline-NoAug,Indian Soybean,6,NoAug,100.00,100.00,100.00,100.00,100.00,,,,,,Single split; unreliable because of tiny Root test support
-Soybean,EXP-2 Soy-HeavyAug-LR1e3,Indian Soybean,6,Heavy augmentation; LR 1e-3,100.00,100.00,100.00,100.00,100.00,,,,,,Single split; unreliable because of tiny Root test support
+Soybean,EXP-1 Soy-Baseline-NoAug,Indian Soybean,6,NoAug,100.00,100.00,100.00,100.00,100.00,,,,,,Single split; unstable because of tiny Root test support
+Soybean,EXP-2 Soy-HeavyAug-LR1e3,Indian Soybean,6,Heavy augmentation; LR 1e-3,100.00,100.00,100.00,100.00,100.00,,,,,,Single split; unstable because of tiny Root test support
 Soybean,EXP-3 Soy-LightAug-LR1e3,Indian Soybean,6,Light augmentation; LR 1e-3,85.88,90.50,85.90,85.70,96.90,,,,,,Recorded experiment
-Soybean,EXP-4 Soy-HeavyAug-LR3e4,Indian Soybean,6,Heavy augmentation; LR 3e-4,99.44,99.50,99.40,99.40,99.90,,,,99.57,0.85,Five-fold CV; principal soybean generalisation estimate
+Soybean,EXP-4 Soy-HeavyAug-LR3e4,Indian Soybean,6,Heavy augmentation; LR 3e-4,99.44,99.50,99.40,99.40,99.90,,,99.57,0.85,Five-fold CV; principal soybean generalisation estimate
