@@ -1,10 +1,21 @@
-notebook,experiment,dataset,classes,augmentation,accuracy,precision,recall,f1,specificity,parameters,train_time_min,best_val_acc,verification_status,notes
-NB1_Wheat_Hybrid,Primary single-dataset hybrid,Wheat Disease Detection Dataset,3,None,97.8102%,97.8202%,97.8102%,97.8100%,98.5365%,59775267,6.8987,95.2555%,Verified from repository metrics_summary.csv,"Test report has zero support for Wheat_Healthy; macro metrics are therefore not representative of all three classes and should be audited before journal submission."
-NB2_Cotton_Hybrid,Primary single-dataset hybrid,Cotton Plant Disease Dataset,6,None,53.5466%,53.0072%,53.5466%,51.6565%,90.7079%,59775462,15.6567,55.2925%,Verified from repository metrics_summary.csv,"Per-class report confirms substantial class confusion; this result should not be replaced by the earlier 99% draft claim."
-NB3_PlantVillage_Hybrid,Primary single-dataset hybrid,PlantVillage selected classes,15,None,97.6744%,97.6824%,97.6744%,97.6761%,99.8332%,59776047,56.1479,97.8036%,Verified from repository metrics_summary.csv,"Per-class report is available in the repository and should be used for detailed analysis."
-NB4_Combined_StandardInception,Architecture ablation baseline,Combined dataset,24,None,95.3278%,95.3359%,95.3278%,95.3158%,99.7984%,270656,59.0842,95.7436%,Verified from repository metrics_summary.csv,"Standard Inception baseline uses concatenative branch fusion."
-NB5_Combined_ResNet,Architecture ablation baseline,Combined dataset,24,None,96.0372%,96.0310%,96.0372%,96.0184%,99.8288%,741720,27.9221,96.1350%,Verified from repository metrics_summary.csv,"Residual-addition comparator."
-NB6_Combined_InceptionAdd,Architecture ablation,Combined dataset,24,None,,,,,,, , ,Not numerically verified from current repository logs,"Notebook retained because it is part of the original experimental design; insert metrics only after locating its executed output/log."
-NB7_Combined_SkipConcat,Architecture ablation,Combined dataset,24,None,,,,,,, , ,Not numerically verified from current repository logs,"Notebook retained because it is part of the original experimental design; insert metrics only after locating its executed output/log."
-Combined augmented study,Augmentation study,Combined dataset,24,Strategic augmentation,97.06%,97.07%,97.06%,97.06%,99.87%,933426,, ,Reported in original draft but not independently re-derived here,"Treat as draft-reported until matched to the executed augmentation notebook/log."
-SoyDisease,External crop evaluation,Soybean India dataset,6,To be reported from executed SoyDisease notebook,,,,,,,,Not numerically verified in current text logs,"Original dataset contains 3363 images; the processed subset described in repository evidence contains 1176 images with class counts Healthy 288, Vein Necrosis 138, Dry Leaf 230, Septoria Brown Spot 284, Root Images 10, Bacterial Leaf Blight 226."
+experiment_family,experiment,dataset,classes,augmentation_or_condition,accuracy_pct,precision_pct,recall_pct,f1_pct,specificity_pct,micro_auc,macro_auc,parameters,cv_mean_pct,cv_std_pct,notes
+Dataset-specific,NB1 Wheat Hybrid,Wheat,3,Dataset-specific,97.81,97.82,97.81,97.81,98.54,,,,,,Recorded result; zero test support for Wheat Healthy limits interpretation
+Dataset-specific,NB2 Cotton Hybrid,Cotton,6,Dataset-specific,53.55,53.01,53.55,51.66,90.71,,,,,,Recorded result; substantial class confusion
+Dataset-specific,NB3 PlantVillage Hybrid,PlantVillage subset,15,Dataset-specific,97.67,97.68,97.67,97.68,99.83,,,,,,Recorded controlled-data run
+Architectural ablation,NB4 Standard Inception + GAP,24-class combined,24,LightAug,95.33,95.34,95.33,95.32,99.80,,,,,,Branch concatenation; no proposed skip
+Architectural ablation,NB5 Residual CNN + GAP,24-class combined,24,LightAug,96.04,96.03,96.04,96.02,99.83,,,,,,Residual addition; no Inception cells
+Architectural ablation,NB6 Inception(Add)-only + GAP,24-class combined,24,LightAug,95.84,95.84,95.84,95.82,99.82,,,,,,Proposed Inception fusion; no skip blocks
+Architectural ablation,NB7 SkipConcat-only + GAP,24-class combined,24,LightAug,95.67,95.70,95.67,95.67,99.81,,,,,,Proposed skip fusion; no Inception cells
+Architectural ablation,PlantDiseaseNet-Hybrid,24-class combined,24,LightAug,95.91,95.98,95.91,95.91,99.82,0.9996,0.9990,934200,,,Principal complete-hybrid benchmark
+Augmentation study,Hybrid-CropColour,24-class combined,24,Crop + Colour,96.31,,,96.31,99.84,,0.9991,,,,Same architecture and dataset; augmentation sensitivity
+Augmentation study,Hybrid-LightAug,24-class combined,24,Flip + Brightness,97.06,97.07,97.06,97.06,99.87,,0.9992,934200,,,Best recorded augmentation-policy result
+Augmentation study,Hybrid-NoAug,24-class combined,24,None,96.03,,,96.04,99.82,,0.9988,,,,Same architecture and dataset
+Augmentation study,Hybrid-LightAug-v2,24-class combined,24,Flip + Brightness,96.43,,,96.42,99.85,,0.9990,,,,Independent repeat of LightAug
+Augmentation study,Hybrid-FullAug,24-class combined,24,All transforms,95.91,,,95.91,99.82,,0.9990,,,,Broad augmentation policy
+Extended benchmark,Proposed 18-class,PlantVillage + Wheat,18,LightAug,99.46,99.47,99.46,99.46,,,,930000,,,Recorded manuscript benchmark
+Extended benchmark,Proposed 18-class,PlantVillage + Wheat,18,NoAug,99.12,99.13,99.12,99.12,,,,,,,Recorded manuscript benchmark
+Extended benchmark,PlantVillage-38,Full PlantVillage,38,NoAug,99.56,,,99.56,,1.0,1.0,940000,,,50-epoch recorded benchmark
+Soybean,EXP-1 Soy-Baseline-NoAug,Indian Soybean,6,NoAug,100.00,100.00,100.00,100.00,100.00,,,,,,Single split; unreliable because of tiny Root test support
+Soybean,EXP-2 Soy-HeavyAug-LR1e3,Indian Soybean,6,Heavy augmentation; LR 1e-3,100.00,100.00,100.00,100.00,100.00,,,,,,Single split; unreliable because of tiny Root test support
+Soybean,EXP-3 Soy-LightAug-LR1e3,Indian Soybean,6,Light augmentation; LR 1e-3,85.88,90.50,85.90,85.70,96.90,,,,,,Recorded experiment
+Soybean,EXP-4 Soy-HeavyAug-LR3e4,Indian Soybean,6,Heavy augmentation; LR 3e-4,99.44,99.50,99.40,99.40,99.90,, , ,99.57,0.85,Five-fold CV; principal soybean generalisation estimate
