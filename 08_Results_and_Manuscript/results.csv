@@ -1,0 +1,13 @@
+experiment,section,dataset,augmentation,architecture,accuracy,precision,recall,f1,specificity,macro_auc,parameters,evidence_status
+NB1_Wheat_Hybrid,Primary Experiments,Wheat,None,Inception(Add)+Skip(Concat),0.978102,0.978202,0.978102,0.978100,0.985365,,59775267,verified_saved_metrics_summary
+NB2_Cotton_Hybrid,Primary Experiments,Cotton,None,Inception(Add)+Skip(Concat),0.535466,0.530072,0.535466,0.516565,0.907079,,59775462,verified_saved_metrics_summary
+NB3_PlantVillage_Hybrid,Primary Experiments,PlantVillage,None,Inception(Add)+Skip(Concat),0.976744,0.976824,0.976744,0.976761,0.998332,,59776047,verified_saved_metrics_summary
+Complete_Hybrid_NoAug,Combined Hybrid,Combined 24-class,None,Inception(Add)+Skip(Concat),0.959100,,,0.959100,,0.9990,934200,verified_executed_notebook_output
+NB4_Combined_StandardInception,Architecture Study,Combined 24-class,None,Standard Inception (Concat),0.953278,0.953359,0.953278,0.953158,0.997984,,270656,verified_saved_metrics_summary
+NB5_Combined_ResNet,Architecture Study,Combined 24-class,None,ResNet residual addition,0.960372,0.960310,0.960372,0.960184,0.998288,,741720,verified_saved_metrics_summary
+NB6_Combined_InceptionAdd,Architecture Study,Combined 24-class,None,Inception(Add) only,0.958400,,,0.958200,,,949112,verified_executed_notebook_output
+NB7_Combined_SkipConcat,Architecture Study,Combined 24-class,None,SkipConnection(Concat) only,0.956700,,,0.956700,,,1139640,verified_executed_notebook_output
+Combined_NoAug_Control,Augmentation Study,Combined 24-class,None,Proposed hybrid,0.960300,,,0.960300,,,,verified_executed_notebook_output
+Combined_StrongAug,Augmentation Study,Combined 24-class,Strong augmentation,Proposed hybrid,0.963100,,,0.963100,0.9984,0.9990,,verified_executed_notebook_output
+Combined_LightAug,Augmentation Study,Combined 24-class,Light augmentation,Proposed hybrid,0.970600,,,0.970600,0.9987,0.9992,,verified_executed_notebook_output
+Soybean_Augmented,Soybean Study,Soybean,Strategic per-class augmentation + L2 + EarlyStopping,Proposed soybean model,1.000000,1.000000,1.000000,1.000000,1.000000,,,verified_executed_notebook_output
