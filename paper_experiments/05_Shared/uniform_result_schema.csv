@@ -1,0 +1,21 @@
+field,required,description
+experiment,yes,Unique experiment identifier
+dataset,yes,Exact dataset name/version used
+dataset_source,yes,Exact source URL or Kaggle dataset slug
+dataset_class_count,yes,Number of classes actually used
+dataset_image_count,yes,Number of images actually used
+train_count,yes,Number of training images
+validation_count,yes,Number of validation images
+test_count,yes,Number of held-out test images
+accuracy,yes,Test accuracy
+precision_macro,yes,Macro-averaged precision
+recall_macro,yes,Macro-averaged recall
+f1_macro,yes,Macro-averaged F1
+specificity_macro,yes,Macro-averaged specificity when computed consistently
+macro_auc_ovr,yes,One-vs-rest macro ROC-AUC when computable
+trainable_parameters,yes,Number of trainable parameters
+flops,yes,FLOPs under the documented profiling convention
+training_time_seconds,yes,Wall-clock training time
+peak_ram_mb,preferred,Peak RAM if measured consistently
+single_image_inference_ms,preferred,Single-image inference latency
+batch_inference_ms_per_image,preferred,Batch inference latency per image
