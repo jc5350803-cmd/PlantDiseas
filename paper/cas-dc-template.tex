@@ -1,0 +1,366 @@
+\documentclass[a4paper,fleqn]{cas-dc}
+
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{natbib}
+\usepackage{url}
+
+\graphicspath{{paper_figures/}{results/figures/}}
+\sloppy
+\emergencystretch=3em
+
+\begin{document}
+\let\WriteBookmarks\relax
+
+\shorttitle{PlantDiseaseNet-Hybrid}
+\shortauthors{Author Name and Anupama Arun}
+\title[mode=title]{A Hybrid Deep Learning Framework for Multi-Crop Plant Disease Classification Using Strategic Feature Fusion and Data Augmentation}
+
+\author[1]{Author Name}
+\ead{author@iiitp.ac.in}
+\author[1]{Anupama Arun}
+\ead{anupamaarun21@cse.iiitp.ac.in}
+\affiliation[1]{organization={Indian Institute of Information Technology Pune},city={Pune},country={India}}
+
+\begin{abstract}
+Automated recognition of plant diseases is an important computer-vision problem because disease symptoms can be visually subtle while the number of crop--disease combinations encountered in agricultural practice is large. Deep convolutional networks have established that leaf images can support accurate disease recognition, but results obtained on controlled datasets do not necessarily translate to heterogeneous field imagery, and the use of increasingly large backbones can increase computational cost. These observations motivate architectures that improve the diversity and preservation of visual evidence without relying exclusively on depth or very large pretrained networks.
+
+This paper presents PlantDiseaseNet-Hybrid, a custom convolutional framework that combines two complementary forms of feature fusion. In each Inception-style cell, parallel $3\times3$, $5\times5$, and $7\times7$ convolutions are fused by element-wise addition rather than channel concatenation. This keeps the branch outputs at a fixed channel width and forces information extracted at different spatial scales to be integrated into a common representation. The subsequent SkipConnection module applies a $7\times7$ convolution and batch normalization, then concatenates the transformed features with the incoming representation. Thus, the two fusion operations have deliberately different roles: addition controls multi-scale channel growth, whereas concatenation preserves earlier information for later feature reuse. The training pipeline additionally uses image-level transformations to expose the classifier to moderate changes in orientation and appearance.
+
+The repository contains saved evaluation artifacts for five completed runs that can be verified without rerunning the notebooks: three dataset-specific hybrid experiments on wheat, cotton, and a 15-class PlantVillage subset, and two combined-dataset reference architectures based on standard Inception and residual connections. The verified results show 97.67\% accuracy for the PlantVillage subset and 53.55\% for the cotton experiment. The wheat report reaches 97.81\% accuracy, but its test report contains zero samples for the declared Wheat Healthy class; consequently, it is not treated as a complete three-class evaluation. The two combined reference runs obtain 95.33\% and 96.04\% accuracy, respectively, but likewise have zero test support for Wheat Healthy. These audit findings are reported explicitly rather than being hidden by aggregate metrics. The study therefore emphasizes transparent evaluation and class coverage alongside headline accuracy.
+\end{abstract}
+
+\begin{keywords}
+Plant disease classification \sep
+Convolutional neural network \sep
+Inception \sep
+Dense connectivity \sep
+Feature fusion \sep
+Data augmentation \sep
+Agricultural computer vision
+\end{keywords}
+
+\maketitle
+
+\section{Introduction}
+Plant diseases can reduce crop yield and quality and can impose substantial costs when diagnosis and intervention are delayed. Image-based diagnosis offers a practical route toward scalable screening because leaf symptoms such as discoloration, lesions, rust pustules, and changes in texture can be represented directly in digital images. The PlantVillage work established the feasibility of large-scale plant disease recognition from leaf imagery and also highlighted an important limitation: performance on controlled images can fall substantially when the model is exposed to images collected under different conditions \citep{Hughes2015,Mohanty2016}. This distinction between controlled recognition and practical generalization remains central to agricultural computer vision.
+
+CNNs are effective because convolutional layers progressively transform local visual patterns into higher-level representations \citep{LeCun2015}. Architectural design nevertheless creates a trade-off. A model must capture symptoms that occur at different spatial scales, yet blindly increasing width or depth can increase memory use, parameter count, and training cost. The Inception family addressed this problem by processing features through parallel convolutional paths with different receptive fields \citep{Szegedy2015}. DenseNet subsequently demonstrated the value of direct feature reuse through concatenation \citep{Huang2017}, while residual networks showed that additive shortcuts can facilitate optimization of deep networks \citep{He2016}.
+
+The present work combines these ideas, but does not simply reproduce any of the three architectures. Its central design choice is to assign different fusion operators to different stages. Multi-scale Inception branches are added element-wise so that the spatial resolutions remain aligned and the output depth does not multiply with the number of branches. In contrast, the later skip module concatenates the transformed representation with its input so that earlier information remains explicitly available. The resulting design is intended to balance multi-scale integration with feature preservation. This distinction is important: the proposed mechanism is better described as \emph{dual-mode feature fusion} than as a generic residual or dense network.
+
+The contribution of this study is therefore architectural as well as methodological. First, a lightweight custom hybrid topology is formulated around addition-based Inception cells and concatenation-based skip cells. Second, the same core design is examined on crop-specific datasets and alongside two reference architectures. Third, the evaluation is reported from saved experiment artifacts rather than from reconstructed or manually rounded values. This last point matters because an inspection of the stored reports revealed class-coverage problems in the wheat-containing runs. Reporting these issues is preferable to presenting aggregate accuracy without qualification.
+
+The main contributions are:
+\begin{itemize}[leftmargin=*]
+\item a hybrid CNN in which addition is used for multi-scale Inception fusion and concatenation is used for feature-preserving skip fusion;
+\item an explicit architectural rationale for assigning the two fusion operators different roles;
+\item evaluation across wheat, cotton, and PlantVillage-derived data, together with reference Inception and residual experiments;
+\item preservation of class-wise reports, training histories, ROC data, confusion matrices, and distribution plots as the evidence base for the manuscript; and
+\item an evaluation protocol that distinguishes declared classes from classes actually represented in the saved test reports.
+\end{itemize}
+
+\section{Related Work}
+\subsection{Deep learning for plant disease recognition}
+The public availability of PlantVillage substantially accelerated research in image-based plant disease recognition. Mohanty et al. trained deep CNNs on 54,306 controlled images covering 14 crop species and 26 diseases or healthy conditions and reported very high held-out performance; importantly, their experiments on externally sourced images showed a much larger domain gap \citep{Mohanty2016}. This finding motivates caution when interpreting results obtained solely from controlled imagery.
+
+Ferentinos evaluated several deep learning architectures for plant disease diagnosis and demonstrated that CNNs can provide strong performance across multiple crops and diseases \citep{Ferentinos2018}. Comparative work on fine-tuning also shows that model choice and transfer-learning strategy can materially affect plant-disease recognition performance \citep{Too2019}. More recent work has examined lightweight CNN/transformer combinations and has emphasized the balance between accuracy and prediction speed rather than accuracy alone \citep{Borhani2022}.
+
+\subsection{Multi-scale and shortcut architectures}
+Inception introduced parallel filters with different receptive fields as a way of increasing representational diversity while controlling computational resources \citep{Szegedy2015}. DenseNet instead connects each layer to subsequent layers through concatenated feature maps, encouraging feature reuse and improving information propagation \citep{Huang2017}. ResNet uses additive residual mappings to make deeper networks easier to optimize \citep{He2016}. PlantDiseaseNet-Hybrid takes the complementary intuition from these architectures but uses addition and concatenation at different locations rather than selecting one fusion rule for the entire network.
+
+\subsection{Data augmentation}
+Data augmentation is widely used to reduce sensitivity to limited training diversity and to expose models to plausible changes in image appearance. A systematic survey by Shorten and Khoshgoftaar discusses the role of augmentation in improving generalization in deep learning \citep{Shorten2019}. In agricultural images, transformations must nevertheless be chosen carefully: aggressive changes can alter disease morphology or create unrealistic samples. The present pipeline therefore uses moderate geometric and photometric transformations recorded in the experiment code.
+
+\section{Materials and Methods}
+\subsection{Datasets and provenance}
+The study uses three dataset sources in the verified hybrid experiments. The PlantVillage source is the public dataset maintained by Mohanty and collaborators; its associated publication describes 54,306 images covering 14 crop species and 26 diseases or healthy conditions \citep{Hughes2015,Mohanty2016}. The wheat experiment uses the three-class Wheat Rust Classification Dataset associated with the work of Safarijalal et al., comprising Brown Rust, Healthy, and Yellow Rust imagery \citep{Safarijalal2022}. The repository configuration identifies the cotton source as the ``Cotton Plant Disease'' Kaggle dataset, for which a persistent Kaggle DOI is available \citep{CottonPlantDisease}.
+
+The experiments do not claim to use every class in the parent datasets. Instead, the stored notebook configurations define explicit target classes. The PlantVillage hybrid run uses 15 classes, while the combined experiments declare 24 classes assembled from cotton, wheat, potato, bell pepper, and tomato categories. The exact class coverage of each saved test report is retained in the result artifacts.
+
+\begin{table*}[t]
+\centering
+\caption{Dataset configurations represented by the verified experiment artifacts. Counts in the final column are declared classes in the corresponding notebook configuration, not a claim that every class appears in the saved test report.}
+\label{tab:datasets}
+\begin{tabular}{p{0.22\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+\toprule
+Dataset / experiment & Source and classes & Declared classes \\
+\midrule
+Wheat / NB1 & Wheat Brown Rust, Wheat Healthy, Wheat Yellow Rust; source configuration follows the Wheat Rust Classification Dataset & 3 \\
+Cotton / NB2 & Cotton Aphids, Army Worm, Bacterial Blight, Healthy, Powdery Mildew, Target Spot & 6 \\
+PlantVillage / NB3 & PlantVillage-derived subset containing potato, bell pepper, and tomato disease/healthy categories & 15 \\
+Combined / NB4--NB5 & Cotton + wheat + potato + bell pepper + tomato categories used by the combined configuration & 24 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Preprocessing and data augmentation}
+The saved experiment configurations resize images to $256\times256$ pixels and convert them to three-channel RGB tensors. Pixel values are scaled to the $[0,1]$ range before being passed to the network. The train/validation/test split is implemented as a stratified 70/15/15 split with a fixed random seed of 42 in the dataset-specific hybrid notebooks.
+
+The augmentation pipeline applies random horizontal and vertical flips, random brightness adjustment, contrast adjustment, saturation adjustment, and hue perturbation. These operations are applied to training images only. The purpose is not to manufacture new disease patterns, but to make the learned representation less dependent on a single orientation or illumination profile. The augmentation strategy is therefore complementary to the architectural fusion mechanism: augmentation diversifies the input distribution, while the network is designed to preserve and combine useful features after those transformations.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{preprocessing_pipeline.png}
+\caption{Preprocessing and augmentation workflow used to prepare leaf images for classification.}
+\label{fig:preprocess}
+\end{figure*}
+
+\subsection{PlantDiseaseNet-Hybrid architecture}
+The model receives a $256\times256\times3$ RGB image and passes it through two Inception cells, two feature-preserving skip cells, four spatial down-sampling stages, global average pooling, and a fully connected classifier. The architectural source code defines the Inception cell with 16 filters in the first cell and 32 in the second. The skip cells use 64 and 128 convolutional filters respectively. The classifier contains dense layers of 512 and 128 units followed by a softmax output whose dimensionality equals the number of target classes.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.94\textwidth]{overall_architecture.png}
+\caption{Overall PlantDiseaseNet-Hybrid architecture. The two Inception cells perform addition-based multi-scale fusion, whereas the subsequent skip cells preserve earlier representations through concatenation.}
+\label{fig:architecture}
+\end{figure*}
+
+\subsubsection{Inception(Add) fusion}
+Each Inception cell applies three parallel convolutions with kernel sizes $3\times3$, $5\times5$, and $7\times7$. Because all branches use the same number of filters and ``same'' padding, their feature maps are spatially and channel-wise compatible. They are therefore fused using element-wise addition:
+\begin{equation}
+Y=F_{3\times3}(X)+F_{5\times5}(X)+F_{7\times7}(X).
+\end{equation}
+
+The motivation is channel control. Concatenating three equally wide branches would produce an output with three times the branch width before the next operation. Addition instead retains the branch width. This does not make the operation universally superior: concatenation retains separate branch responses and therefore offers greater explicit representational capacity. The proposed choice is a deliberate capacity--efficiency trade-off in which the branches are required to contribute to a shared representation.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.88\columnwidth]{inception_block.jpg}
+\caption{Inception(Add) cell with three receptive-field scales and element-wise feature fusion.}
+\label{fig:inception}
+\end{figure}
+
+\subsubsection{SkipConnection(Concat) fusion}
+The skip module applies a $7\times7$ convolution followed by batch normalization and then concatenates the transformed output with the original input:
+\begin{equation}
+Y=\operatorname{Concat}\left(X,F(X)\right).
+\end{equation}
+
+This is different from residual addition. The input representation remains explicitly accessible to later layers, while the newly extracted features are appended along the channel dimension. The operation is inspired by the feature-reuse principle of DenseNet \citep{Huang2017}, but the proposed module is much simpler: it contains a single convolution, batch normalization, and one concatenation with the incoming tensor.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.88\columnwidth]{skip_block.jpg}
+\caption{SkipConnection(Concat) block.}
+\label{fig:skip}
+\end{figure}
+
+\subsection{Network sequence and dimensionality}
+The principal tensor sequence is $256\times256\times3\rightarrow256\times256\times16\rightarrow128\times128\times16\rightarrow128\times128\times32\rightarrow64\times64\times32\rightarrow64\times64\times96\rightarrow32\times32\times96\rightarrow32\times32\times224\rightarrow16\times16\times224$. Global average pooling then produces a 224-dimensional vector for the classifier. The skip operations account for the increase from 32 to 96 channels and from 96 to 224 channels.
+
+\begin{table*}[t]
+\centering
+\caption{Structural specification of the PlantDiseaseNet-Hybrid model implemented in the architecture source.}
+\label{tab:architecture}
+\begin{tabular}{p{0.24\textwidth}p{0.25\textwidth}p{0.17\textwidth}p{0.22\textwidth}}
+\toprule
+Stage & Output tensor & Main operation & Fusion / role \\
+\midrule
+Input & $256\times256\times3$ & RGB input & -- \\
+Inception cell 1 & $256\times256\times16$ & $3\times3$, $5\times5$, $7\times7$ convolution & Add \\
+Pool 1 & $128\times128\times16$ & $2\times2$ max pooling & Down-sampling \\
+Inception cell 2 & $128\times128\times32$ & $3\times3$, $5\times5$, $7\times7$ convolution & Add \\
+Pool 2 & $64\times64\times32$ & $2\times2$ max pooling & Down-sampling \\
+Skip cell 1 & $64\times64\times96$ & $7\times7$ convolution + BN & Concat with input \\
+Pool 3 & $32\times32\times96$ & $2\times2$ max pooling & Down-sampling \\
+Skip cell 2 & $32\times32\times224$ & $7\times7$ convolution + BN & Concat with input \\
+Pool 4 & $16\times16\times224$ & $2\times2$ max pooling & Down-sampling \\
+Classifier & 512 $\rightarrow$ 128 $\rightarrow$ $C$ & GAP + dense layers & Softmax \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Optimization and evaluation protocol}
+The saved hybrid notebooks use a batch size of 64, an initial learning rate of $10^{-3}$, a maximum of 50 epochs, dropout of 0.5 in the classifier, and a fixed seed of 42. Adam is used as the optimizer \citep{Kingma2015}. Early stopping and model checkpointing are included in the experiment pipeline. The exact saved training histories are retained with each result set.
+
+Performance is assessed using accuracy, precision, recall, F1-score, specificity, confusion matrices, class-wise metrics, and ROC curves. For multi-class results, both macro and weighted precision/recall/F1 are preserved in the consolidated CSV. Macro averages are emphasized when class balance is important because weighted averages can conceal poor performance on underrepresented classes.
+
+\section{Experimental Design}
+Five saved result sets were sufficiently complete to be used as quantitative evidence. NB1--NB3 are the dataset-specific hybrid runs. NB4 and NB5 are reference architectures on the combined configuration. The latter are useful as architectural reference points, but they should not be described as a conventional ablation of the proposed model because they change the architecture rather than isolating one factor under otherwise identical conditions.
+
+The repository also contains NB6 and NB7 notebook files, but no independently verifiable saved result set was found for them. They are therefore not assigned numerical results in this manuscript. The soybean notebook contains a recorded failed data-extraction step and no complete validated test report; it is likewise excluded from the quantitative analysis. This decision follows the principle that missing evidence should remain missing rather than be replaced by an assumed value.
+
+\section{Results}
+\subsection{Aggregate performance}
+Table~\ref{tab:results} summarizes the saved quantitative outputs. The reported accuracy values are copied from the stored evaluation reports. Macro and weighted scores are both shown because the class-support audit reveals an important distinction between the two.
+
+\begin{table*}[t]
+\centering
+\caption{Verified aggregate metrics from the saved experiment reports. Values are decimals in the CSV and percentages in this table. A test class count below the declared count indicates that at least one declared class has zero support in the saved test report.}
+\label{tab:results}
+\small
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Experiment & Declared & Test classes & Acc. & Macro P & Macro R & Macro F1 & Weighted F1 & Specificity \\
+\midrule
+NB1 Wheat Hybrid & 3 & 2 & 97.81 & 65.22 & 65.20 & 65.21 & 97.81 & 98.54 \\
+NB2 Cotton Hybrid & 6 & 6 & 53.55 & 53.01 & 53.50 & 51.63 & 51.66 & 90.71 \\
+NB3 PlantVillage Hybrid & 15 & 15 & 97.67 & 96.82 & 96.64 & 96.72 & 97.68 & 99.83 \\
+NB4 Standard Inception & 24 & 23 & 95.33 & 89.64 & 89.55 & 89.57 & 95.32 & 99.80 \\
+NB5 ResNet-style & 24 & 23 & 96.04 & 90.72 & 90.71 & 90.69 & 96.02 & 99.83 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The PlantVillage subset provides the strongest complete class-coverage result among the retained experiments, with 97.67\% accuracy and a macro F1 of 96.72\%. The cotton experiment is substantially more difficult: its accuracy is 53.55\% and macro F1 is 51.63\%. This difference is analytically important because it demonstrates that the architecture does not guarantee uniformly high performance across data sources. Dataset characteristics, class appearance, and visual variability can dominate the outcome.
+
+The wheat result requires particular caution. Its accuracy is 97.81\%, but the saved classification report contains no test samples for Wheat Healthy. Consequently, the macro score is not a valid three-class summary, and the experiment should not be presented as evidence that the model successfully distinguishes all three wheat categories. The same issue occurs in the combined NB4 and NB5 reports. In both cases Wheat Healthy is declared by the configuration but has zero test support. This class-coverage problem is retained as a limitation rather than silently corrected.
+
+\subsection{Class-wise analysis}
+The saved class-wise reports provide a more informative view of model behavior. For the cotton experiment, the strongest class in the stored report is Cotton Army Worm, with F1 of 0.7448, while Cotton Bacterial Blight and Cotton Target Spot are considerably weaker, with F1 values of 0.2941 and 0.3158, respectively. This spread indicates that the aggregate accuracy masks substantial variation between symptom categories.
+
+The PlantVillage subset is considerably more consistent. Its stored report shows F1 values above 0.92 for most classes; Potato Healthy is the lowest reported class at 0.8444, while Tomato Mosaic Virus and Tomato Healthy reach 1.0000 in the saved report. These results suggest that the model is particularly effective when disease-specific visual patterns are sufficiently distinctive, but they do not establish field robustness because the underlying imagery remains dataset-dependent.
+
+\subsection{Reference architecture comparison}
+The combined reference runs provide a useful architectural context. Standard Inception obtains 95.33\% accuracy, whereas the ResNet-style reference obtains 96.04\%. The latter is higher by approximately 0.71 percentage points. This comparison does not, by itself, prove that the proposed dual-mode fusion is superior, because a complete superiority claim would require a directly comparable combined-data run of the proposed architecture with the same data partition and evaluation conditions. The absence of a verified NB6 result is therefore explicitly acknowledged.
+
+\begin{figure*}[t]
+\centering
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB1_training_curves.png}
+\caption{Wheat hybrid}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB2_training_curves.png}
+\caption{Cotton hybrid}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB3_training_curves.png}
+\caption{PlantVillage hybrid}
+\end{subfigure}
+\caption{Saved training histories for the three dataset-specific hybrid experiments.}
+\label{fig:training_core}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB4_training_curves.png}
+\caption{Standard Inception}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB5_training_curves.png}
+\caption{ResNet-style reference}
+\end{subfigure}
+\caption{Saved training histories for the two combined-dataset reference architectures.}
+\label{fig:training_reference}
+\end{figure*}
+
+\subsection{Confusion matrices and ROC analysis}
+The confusion matrices and ROC curves are retained as primary diagnostic artifacts. They should be read together with class support rather than as standalone evidence. In particular, a missing class cannot be inferred to be correctly classified merely because the overall matrix appears sparse.
+
+\begin{figure*}[t]
+\centering
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB1_confusion_matrix.png}
+\caption{NB1}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB2_confusion_matrix.png}
+\caption{NB2}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB3_confusion_matrix.png}
+\caption{NB3}
+\end{subfigure}
+\caption{Confusion matrices for the three dataset-specific hybrid experiments.}
+\label{fig:confusion_core}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB4_confusion_matrix.png}
+\caption{NB4 Standard Inception}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{NB5_confusion_matrix.png}
+\caption{NB5 ResNet-style}
+\end{subfigure}
+\caption{Confusion matrices for the combined-dataset reference architectures.}
+\label{fig:confusion_reference}
+\end{figure*}
+
+\section{Computational Analysis}
+The saved result files report approximately 59.78 million parameters for the three dataset-specific hybrid runs. Their measured training times range from 6.90 to 56.15 minutes in the stored logs, with the PlantVillage run requiring the longest training time. The combined standard-Inception and ResNet-style reference runs report 270,656 and 741,720 parameters respectively. These parameter counts should not be compared as a claim of superiority across architectures without confirming that the implementations use equivalent input pipelines and classifier heads.
+
+\begin{table}[t]
+\centering
+\caption{Stored computational measurements.}
+\label{tab:complexity}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Run & Parameters & Train time (min) & Peak memory (MB) \\
+\midrule
+NB1 & 59,775,267 & 6.90 & 719.79 \\
+NB2 & 59,775,462 & 15.66 & 720.27 \\
+NB3 & 59,776,047 & 56.15 & 720.92 \\
+NB4 & 270,656 & 59.08 & 18.79 \\
+NB5 & 741,720 & 27.92 & 27.38 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The computational results also expose a discrepancy with an earlier manuscript draft that quoted approximately 933K trainable parameters. The current repository evidence does not support that value for NB1--NB3: the saved metrics files report approximately 59.8M parameters. Similarly, the previously quoted 99.12\% and 97.06\% headline results are not present in the verified NB1--NB5 saved reports. The present manuscript deliberately uses the repository evidence instead of those earlier numbers.
+
+\section{Discussion}
+The experiments provide a mixed but informative picture. The architecture performs strongly on the retained PlantVillage subset, while the cotton dataset remains challenging. This suggests that the main value of the proposed design should not be framed as a universal accuracy guarantee. A more defensible interpretation is that the two fusion mechanisms provide a structured way to combine multi-scale and earlier features, and that their usefulness depends on the visual properties and distribution of the target dataset.
+
+The addition operation in the Inception cell has a clear structural effect: the three branches are merged without multiplying the channel dimension. This is attractive when several receptive-field sizes are needed at high spatial resolution. The trade-off is that the individual branch outputs are no longer separately accessible after fusion. The concatenation operation in the skip module makes the opposite choice. It increases channel dimensionality, but retains both transformed and earlier information. The architecture therefore uses addition where channel control is most important and concatenation where explicit feature reuse is the primary objective.
+
+The class-wise results support a second observation. High weighted scores can coexist with weak classes, especially in heterogeneous or imbalanced datasets. Cotton illustrates this directly, where the difference between the strongest and weakest class F1 values is large. This is why macro metrics and class support are included in the consolidated result table rather than reporting accuracy alone.
+
+The class-coverage issue in the wheat and combined experiments is a substantive methodological limitation. A three-class experiment in which one class has zero test support is not equivalent to a complete three-class evaluation. The same applies to the combined 24-class runs. The saved reports are useful evidence of what was actually evaluated, but they should not be used to claim complete discrimination across all declared categories.
+
+\section{Limitations}
+Several limitations should be addressed before submission. First, the verified saved experiments do not provide a complete, directly comparable result for every architectural variant that was originally proposed. In particular, NB6 and NB7 do not have a verifiable saved result set in the current clean evidence collection. Second, the combined experiments have a class-coverage defect involving Wheat Healthy. Third, the dataset-specific hybrid runs and combined reference runs have different parameter counts and therefore should not be interpreted as a controlled architecture benchmark. Fourth, the retained datasets are largely curated image collections, so high performance on them should not be equated with field deployment robustness. Finally, the saved experiments do not establish confidence intervals or repeated-run variance; the reported values correspond to the recorded runs rather than an estimate over multiple independent seeds.
+
+\section{Conclusion and Future Work}
+This study presented PlantDiseaseNet-Hybrid as a dual-mode feature-fusion CNN for plant disease classification. The architecture uses addition to combine parallel multi-scale convolution responses and concatenation to preserve earlier representations in subsequent skip modules. This division of roles provides a simple architectural rationale: control channel growth during multi-scale extraction while retaining feature reuse at deeper stages.
+
+The verified experiments show that the framework can achieve strong performance on some curated datasets, including 97.67\% accuracy on the retained 15-class PlantVillage subset. At the same time, the cotton result and the class-support defects in the wheat-containing experiments demonstrate why a journal evaluation should go beyond a single headline accuracy. The present manuscript therefore reports the stored results with their limitations and does not substitute earlier unverified values.
+
+Future work should first correct the class-splitting and coverage problem and rerun the complete combined experiment with the proposed hybrid architecture under the same partition as the reference models. Repeated runs with multiple seeds should then be used to estimate variability. External field images should be introduced to evaluate domain robustness, and deployment-oriented measurements should be obtained on a defined edge device. Attention mechanisms and explainability methods may subsequently be investigated once the baseline evaluation is methodologically complete.
+
+\section*{Data and Code Availability}
+The manuscript is accompanied by the cleaned repository workspace containing the saved result artifacts, consolidated CSV, figures, and this CAS manuscript. Dataset provenance is documented through the original dataset publications and persistent source records cited above.
+
+\section*{Declaration of Competing Interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Funding}
+No external funding was received for this work.
+
+\section*{Acknowledgements}
+The authors acknowledge the maintainers and original authors of the public datasets used in the experiments.
+
+\bibliographystyle{cas-model2-names}
+\bibliography{references}
+
+\end{document}
