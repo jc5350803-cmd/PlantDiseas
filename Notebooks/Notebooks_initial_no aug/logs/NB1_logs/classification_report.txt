@@ -1,9 +1,0 @@
-                   precision    recall  f1-score   support
-
- Wheat_Brown_rust     0.9851    0.9706    0.9778       136
-    Wheat_Healthy     0.0000    0.0000    0.0000         0
-Wheat_Yellow_rust     0.9714    0.9855    0.9784       138
-
-         accuracy                         0.9781       274
-        macro avg     0.6522    0.6520    0.6521       274
-     weighted avg     0.9782    0.9781    0.9781       274
