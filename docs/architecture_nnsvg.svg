@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1026.8" height="520" viewBox="0 0 1026.8 520">
+<rect width="1026.8" height="520" fill="white"/>
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#888"/></marker><marker id="skip_arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#c0392b"/></marker></defs>
+<text x="513.0" y="28" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#111">Proposed1 — Custom Hybrid CNN Architecture</text>
+<text x="513.0" y="44" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#555">Input: 256×256×3  |  Inception_cell (Add)  +  SkipConnection (Concat)  +  GAP  →  Softmax(38)</text>
+<line x1="72" y1="392" x2="157.6" y2="392" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="175.6" y1="392" x2="261.2" y2="404" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="267.2" y1="404" x2="338.4" y2="404" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="360.4" y1="404" x2="431.59999999999997" y2="414" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="437.59999999999997" y1="414" x2="496.79999999999995" y2="414" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="526.8" y1="414" x2="586.0" y2="420" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="592.0" y1="420" x2="644.0" y2="420" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="682.0" y1="420" x2="734.0" y2="425" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="740.0" y1="425" x2="786.0" y2="431" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="796.0" y1="431" x2="834.8" y2="413" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="844.8" y1="413" x2="878.8" y2="425" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="888.8" y1="425" x2="922.8" y2="432" stroke="#888" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<path d="M434.59999999999997,360 C434.59999999999997,330 511.79999999999995,330 511.79999999999995,360" fill="none" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#skip_arr)"/>
+<text x="473.0" y="324" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#c0392b">identity
+32ch</text>
+<path d="M589.0,372 C589.0,342 663.0,342 663.0,372" fill="none" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#skip_arr)"/>
+<text x="626.0" y="336" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#c0392b">identity
+96ch</text>
+<polygon points="60,344 72,344 72,440 60,440" fill="#F5E6C8" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="60,344 72,344 129.6,315.2 117.6,315.2" fill="#ffffff" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="72,344 129.6,315.2 129.6,411.2 72,440" fill="#cebfa1" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="94.0" y="294.2" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">Input</text>
+<text x="94.0" y="305.2" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">256×256×3</text>
+<polygon points="157.6,344 175.6,344 175.6,440 157.6,440" fill="#7EC8DC" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="157.6,344 175.6,344 233.2,315.2 215.2,315.2" fill="#b6ffff" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="175.6,344 233.2,315.2 233.2,411.2 175.6,440" fill="#57a1b5" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="194.6" y="283.2" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">Inception</text>
+<text x="194.6" y="294.2" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">cell(16)</text>
+<text x="194.6" y="305.2" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">Add</text>
+<text x="166.6" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">3×3+5×5+7×7</text>
+<polygon points="261.2,368 267.2,368 267.2,440 261.2,440" fill="#F7C59F" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="261.2,368 267.2,368 310.4,346.4 304.4,346.4" fill="#fffdd7" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="267.2,368 310.4,346.4 310.4,418.4 267.2,440" fill="#d09e78" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="285.2" y="325.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">BN+Pool</text>
+<text x="285.2" y="336.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">128×128</text>
+<text x="264.2" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">MaxPool 2×2</text>
+<polygon points="338.4,368 360.4,368 360.4,440 338.4,440" fill="#5BB8D4" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="338.4,368 360.4,368 403.59999999999997,346.4 381.59999999999997,346.4" fill="#93f0ff" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="360.4,368 403.59999999999997,346.4 403.59999999999997,418.4 360.4,440" fill="#3491ad" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="370.4" y="314.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">Inception</text>
+<text x="370.4" y="325.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">cell(32)</text>
+<text x="370.4" y="336.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">Add</text>
+<text x="349.4" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">3×3+5×5+7×7</text>
+<polygon points="431.59999999999997,388 437.59999999999997,388 437.59999999999997,440 431.59999999999997,440" fill="#F7C59F" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="431.59999999999997,388 437.59999999999997,388 468.79999999999995,372.4 462.79999999999995,372.4" fill="#fffdd7" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="437.59999999999997,388 468.79999999999995,372.4 468.79999999999995,424.4 437.59999999999997,440" fill="#d09e78" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="449.59999999999997" y="351.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">BN+Pool</text>
+<text x="449.59999999999997" y="362.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">64×64</text>
+<text x="434.59999999999997" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">MaxPool 2×2</text>
+<polygon points="496.79999999999995,388 526.8,388 526.8,440 496.79999999999995,440" fill="#82C878" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="496.79999999999995,388 526.8,388 558.0,372.4 528.0,372.4" fill="#baffb0" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="526.8,388 558.0,372.4 558.0,424.4 526.8,440" fill="#5ba151" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="526.8" y="340.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">SkipConn</text>
+<text x="526.8" y="351.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">(64)</text>
+<text x="526.8" y="362.4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">Concat</text>
+<text x="511.79999999999995" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">Conv7×7+BN</text>
+<text x="511.79999999999995" y="467" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">64+32=96ch</text>
+<polygon points="586.0,400 592.0,400 592.0,440 586.0,440" fill="#9BB7D4" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="586.0,400 592.0,400 616.0,388.0 610.0,388.0" fill="#d3efff" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="592.0,400 616.0,388.0 616.0,428.0 592.0,440" fill="#7490ad" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="601.0" y="367.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">Pool</text>
+<text x="601.0" y="378.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">32×32</text>
+<text x="589.0" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">MaxPool 2×2</text>
+<polygon points="644.0,400 682.0,400 682.0,440 644.0,440" fill="#52A84A" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="644.0,400 682.0,400 706.0,388.0 668.0,388.0" fill="#8ae082" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="682.0,400 706.0,388.0 706.0,428.0 682.0,440" fill="#2b8123" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="675.0" y="356.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">SkipConn</text>
+<text x="675.0" y="367.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">(128)</text>
+<text x="675.0" y="378.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">Concat</text>
+<text x="663.0" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">Conv7×7+BN</text>
+<text x="663.0" y="467" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">128+96=224ch</text>
+<polygon points="734.0,410 740.0,410 740.0,440 734.0,440" fill="#9BB7D4" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="734.0,410 740.0,410 758.0,401.0 752.0,401.0" fill="#d3efff" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="740.0,410 758.0,401.0 758.0,431.0 740.0,440" fill="#7490ad" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="746.0" y="380.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">Pool</text>
+<text x="746.0" y="391.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">16×16</text>
+<text x="737.0" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">MaxPool 2×2</text>
+<polygon points="786.0,422 796.0,422 796.0,440 786.0,440" fill="#C084D4" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="786.0,422 796.0,422 806.8,416.6 796.8,416.6" fill="#f8bcff" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="796.0,422 806.8,416.6 806.8,434.6 796.0,440" fill="#995dad" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="796.0" y="395.6" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">GAP</text>
+<text x="796.0" y="406.6" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">(224,)</text>
+<text x="791.0" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">Global</text>
+<text x="791.0" y="467" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">Avg Pool</text>
+<polygon points="834.8,385 844.8,385 844.8,440 834.8,440" fill="#F9E2AE" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="834.8,385 844.8,385 850.8,382.0 840.8,382.0" fill="#ffffe6" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="844.8,385 850.8,382.0 850.8,437.0 844.8,440" fill="#d2bb87" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="842.8" y="350.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">Dense</text>
+<text x="842.8" y="361.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">512</text>
+<text x="842.8" y="372.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">ReLU</text>
+<text x="839.8" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">Drop 0.4</text>
+<polygon points="878.8,410 888.8,410 888.8,440 878.8,440" fill="#F9C642" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="878.8,410 888.8,410 894.8,407.0 884.8,407.0" fill="#fffe7a" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="888.8,410 894.8,407.0 894.8,437.0 888.8,440" fill="#d29f1b" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="886.8" y="375.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">Dense</text>
+<text x="886.8" y="386.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">128</text>
+<text x="886.8" y="397.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">ReLU</text>
+<text x="883.8" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">Drop 0.3</text>
+<polygon points="922.8,424 932.8,424 932.8,440 922.8,440" fill="#A8D5A2" stroke="#444" stroke-width="1.2" opacity="1.0"/><polygon points="922.8,424 932.8,424 938.8,421.0 928.8,421.0" fill="#e0ffda" stroke="#444" stroke-width="1.0" opacity="1.0"/><polygon points="932.8,424 938.8,421.0 938.8,437.0 932.8,440" fill="#81ae7b" stroke="#444" stroke-width="1.0" opacity="1.0"/>
+<text x="930.8" y="400.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="bold" fill="#111">Softmax</text>
+<text x="930.8" y="411.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="normal" fill="#111">38 cls</text>
+<text x="927.8" y="456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="7.5" fill="#555" font-style="italic">Output</text>
+<text x="12" y="444" font-family="Arial, Helvetica, sans-serif" font-size="8.5" font-weight="bold" fill="#222">Legend:</text>
+<rect x="12" y="443" width="16" height="10" rx="2" fill="#7EC8DC" stroke="#555" stroke-width="0.8"/>
+<text x="32" y="452" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#333">Inception_cell — Add fusion</text>
+<rect x="207" y="443" width="16" height="10" rx="2" fill="#52A84A" stroke="#555" stroke-width="0.8"/>
+<text x="227" y="452" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#333">SkipConnection — Concat (DenseNet)</text>
+<rect x="402" y="443" width="16" height="10" rx="2" fill="#F7C59F" stroke="#555" stroke-width="0.8"/>
+<text x="422" y="452" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#333">BatchNorm + MaxPool</text>
+<rect x="597" y="443" width="16" height="10" rx="2" fill="#C084D4" stroke="#555" stroke-width="0.8"/>
+<text x="617" y="452" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#333">GlobalAveragePooling</text>
+<rect x="12" y="459" width="16" height="10" rx="2" fill="#F9E2AE" stroke="#555" stroke-width="0.8"/>
+<text x="32" y="468" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#333">Dense / Fully Connected</text>
+<rect x="207" y="459" width="16" height="10" rx="2" fill="#A8D5A2" stroke="#555" stroke-width="0.8"/>
+<text x="227" y="468" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#333">Softmax Output</text>
+<line x1="402" y1="464" x2="420" y2="464" stroke="#c0392b" stroke-width="2" stroke-dasharray="4,2"/>
+<text x="422" y="468" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#333">── Skip (identity) path</text>
+</svg>

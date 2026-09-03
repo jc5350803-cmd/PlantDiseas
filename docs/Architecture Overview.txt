@@ -1,0 +1,26 @@
+Architecture Overview
+The proposed model is a custom hybrid convolutional neural network designed for multi-class plant disease classification across 38 PlantVillage categories. The architecture combines two custom layer types - Inception_cell and SkipConnection.
+
+Input and Spatial Progression
+The input is a 256×256×3 RGB image. Spatial resolution is halved at each stage via 2×2 MaxPooling, while channel depth grows: 3 → 16 → 32 → 96 → 224, arriving at a 16×16×224 feature map before the classifier.
+
+Inception Cell with Element-wise Addition
+Each Inception_cell applies three parallel convolutions of kernel sizes 3×3, 5×5, and 7×7 to the same input feature map, producing three output tensors of identical depth. These are fused by element-wise Add rather than channel-wise Concatenation as used in standard GoogLeNet.
+Reasons:
+1. it eliminates channel explosion: Concatenation would triple the output depth after each cell (e.g. 16 → 48 after the first), whereas Addition keeps it fixed at num_filters. This is critical for a 256×256 input where early feature maps are already spatially large.
+2. Addition introduces implicit regularisation: because all three branches must produce activations that sum constructively to a useful representation, each branch is forced to learn genuinely complementary features at its respective scale. Branches cannot ignore each other. 
+3. three scale responses — fine (3×3), medium (5×5), and coarse (7×7) - are blended into one tensor, which is analogous to ensemble averaging. 
+
+
+Skip Connection with Concatenation
+Each SkipConnection block applies a single 7×7 convolution followed by Batch Normalisation, then Concatenates the resulting feature map with the original input along the channel axis. This contrasts with ResNet's residual connection which uses element-wise Addition.
+The Concatenation choice preserves the complete input signal in the output. Addition blends the input with new features, causing partial information loss. By stacking them, every downstream layer receives both the newly learned high-level features and the unmodified lower-level spatial detail from earlier in the network. This is the DenseNet design principle which demonstrated on benchmark datasets that feature reuse through Concatenation leads to stronger gradient flow and better accuracy than ResNet's Addition approach.
+The consequence is a channel depth that grows with each skip block: the first block receives 32 channels and outputs 96 (64 new + 32 original); the second receives 96 and outputs 224 (128 new + 96 original). This growing vocabulary of features is then spatially compressed by MaxPooling before passing to the next stage, keeping the spatial footprint manageable while retaining semantic richness.
+
+Global Average Pooling Instead of Flatten
+After the final skip block produces a 16×16×224 feature map, Global Average Pooling (GAP) compresses it to a 224-dimensional vector by averaging each of the 224 channels across the entire 16×16 spatial grid.
+Why not Flatten?
+it would produce a 57,344-dimensional vector (16×16×224), which when connected to Dense(512) creates 29.4 million parameters in a single layer. With approximately 38,000 training images, this ratio of parameters to data guarantees overfitting. GAP reduces the same transition to 224×512 = 114,688 parameters, a 256× reduction, while retaining all 224 channels as summary statistics. The total model parameter count with GAP is approximately 934K, compared to over 30M with Flatten — making the model deployable and generalisable.
+
+Classifier Head
+The 224-dimensional GAP output passes through Dense(512, ReLU) → Dropout(0.4) → Dense(128, ReLU) → Dropout(0.3) → Dense(38, Softmax). The two-stage compression (512 → 128 → 38) provides gradual dimensionality reduction, allowing the network to learn complex non-linear class boundaries before the final probability assignment. Dropout at both stages further regularises against overfitting.
